@@ -4,6 +4,8 @@ import { Sky } from 'three/examples/jsm/Addons.js'
 import { Timer } from 'three/addons/misc/Timer.js'
 import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+
 
 /**
  * Base
@@ -23,7 +25,12 @@ const scene = new THREE.Scene()
 
 let ghost
 
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
 const modelLoader = new GLTFLoader()
+modelLoader.setDRACOLoader(dracoLoader)
+
+
 modelLoader.load('./ghost/ghost.glb', (gltf) => {
     ghost = gltf.scene // Assign loaded ghost model to the variable
     ghost.traverse((child) => {
