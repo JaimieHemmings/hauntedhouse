@@ -55,11 +55,11 @@ modelLoader.load('./tree/tree.glb', (gltf) => {
 const textureLoader = new THREE.TextureLoader()
 
 // Floor
-const floorAlpha = textureLoader.load('./floor/alpha.jpg')
-const floorColor = textureLoader.load('./floor/coast_sand_rocks/diff.jpg')
-const floorARM = textureLoader.load('./floor/coast_sand_rocks/arm.jpg')
-const floorNormal = textureLoader.load('./floor/coast_sand_rocks/nor.jpg')
-const floorDisplacement = textureLoader.load('./floor/coast_sand_rocks/disp.jpg')
+const floorAlpha = textureLoader.load('./floor/alpha.webp')
+const floorColor = textureLoader.load('./floor/coast_sand_rocks/diff.webp')
+const floorARM = textureLoader.load('./floor/coast_sand_rocks/arm.webp')
+const floorNormal = textureLoader.load('./floor/coast_sand_rocks/nor.webp')
+const floorDisplacement = textureLoader.load('./floor/coast_sand_rocks/disp.webp')
 
 floorColor.colorSpace = THREE.SRGBColorSpace
 
@@ -79,9 +79,9 @@ floorNormal.wrapT = THREE.RepeatWrapping
 floorDisplacement.wrapT = THREE.RepeatWrapping
 
 // Wall
-const wallColor = textureLoader.load('./wall/castle_walls_slate/diff.jpg')
-const wallARM = textureLoader.load('./wall/castle_walls_slate/arm.jpg')
-const wallNormal = textureLoader.load('./wall/castle_walls_slate/nor.jpg')
+const wallColor = textureLoader.load('./wall/castle_walls_slate/diff.webp')
+const wallARM = textureLoader.load('./wall/castle_walls_slate/arm.webp')
+const wallNormal = textureLoader.load('./wall/castle_walls_slate/nor.webp')
 
 wallColor.repeat.set(2, 2)
 wallARM.repeat.set(2, 2)
@@ -97,9 +97,9 @@ wallNormal.wrapT = THREE.RepeatWrapping
 
 // Roof
 
-const roofColor = textureLoader.load('./roof/diff.jpg')
-const roofARM = textureLoader.load('./roof/arm.jpg')
-const roofNormal = textureLoader.load('./roof/nor.jpg')
+const roofColor = textureLoader.load('./roof/diff.webp')
+const roofARM = textureLoader.load('./roof/arm.webp')
+const roofNormal = textureLoader.load('./roof/nor.webp')
 
 roofColor.colorSpace = THREE.SRGBColorSpace
 
@@ -121,9 +121,9 @@ roofNormal.rotation = Math.PI / 2
 
 // Bush
 
-const bushColor = textureLoader.load('./bush/diff.jpg')
-const bushARM = textureLoader.load('./bush/arm.jpg')
-const bushNormal = textureLoader.load('./bush/nor.jpg')
+const bushColor = textureLoader.load('./bush/diff.webp')
+const bushARM = textureLoader.load('./bush/arm.webp')
+const bushNormal = textureLoader.load('./bush/nor.webp')
 
 bushColor.colorSpace = THREE.SRGBColorSpace
 
@@ -137,21 +137,21 @@ bushNormal.wrapS = THREE.RepeatWrapping
 
 // Grave
 
-const graveColor = textureLoader.load('./grave/diff.jpg')
-const graveARM = textureLoader.load('./grave/arm.jpg')
-const graveNormal = textureLoader.load('./grave/nor.jpg')
+const graveColor = textureLoader.load('./grave/diff.webp')
+const graveARM = textureLoader.load('./grave/arm.webp')
+const graveNormal = textureLoader.load('./grave/nor.webp')
 
 graveColor.colorSpace = THREE.SRGBColorSpace
 
 // Door
 
-const doorColor = textureLoader.load('./door/color.jpg')
-const doorAlpha = textureLoader.load('./door/alpha.jpg')
-const doorAmbientOcclusion = textureLoader.load('./door/ambientOcclusion.jpg')
-const doorHeight = textureLoader.load('./door/height.jpg')
-const doorNormal = textureLoader.load('./door/normal.jpg')
-const doorMetalness = textureLoader.load('./door/metalness.jpg')
-const doorRoughness = textureLoader.load('./door/roughness.jpg')
+const doorColor = textureLoader.load('./door/color.webp')
+const doorAlpha = textureLoader.load('./door/alpha.webp')
+const doorAmbientOcclusion = textureLoader.load('./door/ambientOcclusion.webp')
+const doorHeight = textureLoader.load('./door/height.webp')
+const doorNormal = textureLoader.load('./door/normal.webp')
+const doorMetalness = textureLoader.load('./door/metalness.webp')
+const doorRoughness = textureLoader.load('./door/roughness.webp')
 
 doorColor.colorSpace = THREE.SRGBColorSpace
 
@@ -268,8 +268,7 @@ scene.add(house)
 // Graves
 
 const gravegeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2)
-const gravematerial = new THREE.MeshStandardMaterial({ 
-    color: '#5A5A5A',
+const gravematerial = new THREE.MeshStandardMaterial({
     map: graveColor,
     aoMap: graveARM,
     roughnessMap: graveARM,
