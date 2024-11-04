@@ -1,8 +1,9 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Sky } from 'three/examples/jsm/Addons.js'
 import { Timer } from 'three/addons/misc/Timer.js'
 import GUI from 'lil-gui'
+import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
 /**
  * Base
@@ -15,6 +16,37 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Ghost
+ */
+
+let ghost
+
+const modelLoader = new GLTFLoader()
+modelLoader.load('./ghost/ghost.glb', (gltf) => {
+    ghost = gltf.scene // Assign loaded ghost model to the variable
+    ghost.traverse((child) => {
+        if (child.isMesh) {
+            child.material.transparent = true
+            child.material.opacity = 0.1
+            child.material.emissive = new THREE.Color('rgba(0, 255, 255, 0.1)')
+            child.material.emissiveIntensity = 2
+        }
+    })
+    ghost.scale.set(0.4, 0.4, 0.4)
+    ghost.position.set(0, 0.25, 3)
+
+    scene.add(ghost)
+})
+
+modelLoader.load('./tree/tree.glb', (gltf) => {
+    const tree = gltf.scene
+    tree.scale.set(15, 15, 15)
+    tree.position.set(-7, 0, 0)
+    tree.rotation.set(0, Math.PI, 0)
+    scene.add(tree)
+})
 
 /**
  * Textures
@@ -340,14 +372,40 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 6
-camera.position.y = 4
-camera.position.z = 12
-scene.add(camera)
+camera.position.x = 5
+camera.position.y = 3
+camera.position.z = 8
 
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+camera.lookAt(new THREE.Vector3(0, 0, 0))
+
+gui.add(camera.position, 'x').min(-10).max(10).step(0.01).name('Camera X')
+gui.add(camera.position, 'y').min(-10).max(10).step(0.01).name('Camera Y')
+gui.add(camera.position, 'z').min(-10).max(10).step(0.01).name('Camera Z')
+
+gui.hide()
+
+let guiVisible = false
+document.addEventListener('keydown', (event) => {
+    if(event.key === 'h')
+    {
+        guiVisible ? (
+            guiVisible = false,
+            gui.hide()
+        ):(
+            guiVisible = true,
+            gui.show()
+        )
+    }
+})
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableZoom = false; // Disable zoom
+controls.enablePan = false;  // Disable panning
+controls.maxPolarAngle = Math.PI / 2; // Limit vertical rotation (optional)
+controls.minPolarAngle = 0;           // Limit vertical rotation (optional)
+
+
+scene.add(camera)
 
 /**
  * Renderer
@@ -392,6 +450,23 @@ directionalLight.shadow.camera.far = 20
 directionalLight.shadow.camera.near = 1
 
 /**
+ * Sky
+ */
+
+const sky = new Sky()
+sky.material.uniforms.turbidity.value = 3
+sky.material.uniforms.rayleigh.value = 10
+sky.material.uniforms.mieCoefficient.value = 0.1
+sky.material.uniforms.mieDirectionalG.value = 0.95
+sky.material.uniforms.sunPosition.value = new THREE.Vector3(0.8, -0.05, -2)
+sky.scale.set(100,100,100)
+scene.add(sky)
+
+// Fog
+scene.fog = new THREE.FogExp2('#06343f', 0.1)
+
+
+/**
  * Animate
  */
 const timer = new Timer()
@@ -402,8 +477,24 @@ const tick = () =>
     timer.update()
     const elapsedTime = timer.getElapsed()
 
-    // Update controls
-    controls.update()
+    // Update ghost position if it is loaded
+    if (ghost) {
+        ghost.position.x = Math.sin(elapsedTime/4) * 7
+        ghost.position.z = Math.cos(elapsedTime/4) * 7
+        ghost.position.y = Math.sin(elapsedTime * 2) * 0.1 + 0.25
+        // vary the ghost opacity between 0 and 0.2 as it travels
+        ghost.traverse((child) => {
+            if (child.isMesh) {
+                child.material.opacity = Math.sin(elapsedTime) * 0.1 + 0.1
+            }
+        })  
+
+        // make the ghost look at the camera
+        ghost.lookAt(camera.position)
+
+    }
+
+    controls.update();
 
     // Render
     renderer.render(scene, camera)
